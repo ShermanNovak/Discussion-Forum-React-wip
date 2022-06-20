@@ -1,0 +1,15 @@
+.card {
+    padding: 1.5rem;
+    width: 78rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+    box-shadow: 0 1px 8px grey;
+    border-radius: 14px;
+    color: #340068;
+  }
+  
+  .card:hover {
+    background: #340068;
+    color: white;
+  }

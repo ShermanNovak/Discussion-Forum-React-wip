@@ -1,0 +1,27 @@
+.tabline {
+    position: fixed;
+    top: 3.2rem;
+    overflow: hidden;
+    box-shadow: 0 1px 1px grey;
+    width: 100%;
+    line-height: 3rem;
+    background-color: white;
+    z-index: 1;
+}
+
+.tabs {
+    line-height: 3rem;
+    margin-left: 4rem;
+}
+
+.tab {
+    line-height: 3rem;
+    margin-right: 2rem;
+    padding-bottom: 0.5rem;
+    color: #340068;
+}
+
+.selected {
+    font-weight: bold;
+    border-bottom: 2px solid #59bfff;
+}

@@ -1,0 +1,17 @@
+.control input {
+    border-radius: 20px;
+    border: 1px solid #340068;
+    height: 30px;
+}
+
+.control label,
+.control input {
+    display: block;
+}
+
+.control label {
+    font-weight: bold;
+    flex: 1;
+    color: #340068;
+    margin-bottom: 0.5rem;
+}

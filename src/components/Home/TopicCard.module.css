@@ -1,0 +1,61 @@
+.last_user {
+    border-radius: 50%;
+    height: 2rem;
+    width: 2rem;
+    margin-top: -5px;
+}
+
+.title, .thread_count, .post_count, .last_post_text{
+    font-family: Courier, monospace;
+}
+
+.description {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    width: 30rem;
+}
+
+.thread_count, .post_count {
+    font-size: 22px;
+}
+
+.vertical_line {
+    position: absolute;
+    margin-left: 32rem; 
+}
+
+.posts {
+    position: absolute;
+    margin-left: 2.5rem;
+}
+
+.last_post {
+    position: absolute;
+    margin-left: 8rem;
+    width: 10rem;
+}
+
+.thread_count {
+    position: absolute;
+    margin-top: 0.5rem;
+}
+
+.post_count {
+    position: absolute;
+    margin-top: 0.5rem;
+    margin-left: 6.2rem;
+}
+
+.last_user {
+    position: absolute;
+    margin-top: 0.5rem;
+    margin-left: 12rem;
+}
+
+.last_post_text {
+    position: absolute;
+    margin-top: 0.7rem;
+    margin-left: 15rem;
+    width: 25rem;
+}
+
+

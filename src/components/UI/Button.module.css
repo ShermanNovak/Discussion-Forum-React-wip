@@ -1,0 +1,11 @@
+.button {
+    background: #340068;
+    color: #fffcf9;
+    border: none;
+    border-radius: 5px;
+    padding: 16px;
+    font-size: 13px;
+    text-align: center;
+    line-height: 0;
+    font-family: Courier, monospace;
+}

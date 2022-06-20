@@ -1,23 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
+import Header from './components/Navigation/Header'
+import Home from './components/Home/Home'
+import Threads from './components/Threads/Threads'
+
+import { useState } from 'react';
 
 function App() {
+
+  const [currentPage, setCurrentPage] = useState('Topics');
+
+  const [selectedTab, setSelectedTab] = useState('IS112');
+
+  const [selectedTopic, setSelectedTopic] = useState('');
+
+  const changeSelectedTopicHandler = (event) => {
+      setSelectedTopic(event.target.dataset.cid);
+      setCurrentPage('Threads');
+  }
+
+  const changeSelectedTabHandler = (event) => {
+      setCurrentPage('Topics');
+      setSelectedTab(event.target.dataset.courseid);
+  }
+
+  const backToTopicsHandler = (event) => {
+    setCurrentPage('Topics');
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Header 
+        pageheader="Discussion Forum"
+        selectedTab={selectedTab}
+        changeSelectedTabHandler={changeSelectedTabHandler}
+      />
+      
+      {currentPage === 'Topics' ? 
+        <Home 
+          selectedTab={selectedTab}
+          changeSelectedTabHandler={changeSelectedTabHandler}
+          changeSelectedTopicHandler={changeSelectedTopicHandler}
+        /> : ''}
+
+      {currentPage === 'Threads' ?
+        <Threads 
+          selectedTab={selectedTab}
+          selectedTopic={selectedTopic}
+          backToTopicsHandler={backToTopicsHandler}
+        /> : ''}
+      
     </div>
   );
 }
