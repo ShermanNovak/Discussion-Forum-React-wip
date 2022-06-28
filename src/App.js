@@ -1,53 +1,45 @@
-import Header from './components/Navigation/Header'
-import Home from './components/Home/Home'
-import Threads from './components/Threads/Threads'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { useContext } from 'react';
 
-import { useState } from 'react';
+import Header from './components/Navigation/Header'
+import Topics from './components/Home/Topics'
+import Threads from './components/Threads/Threads'
+import AuthForm from './components/Login/AuthForm'
+import AuthContext from './store/auth-context'
 
 function App() {
-
-  const [currentPage, setCurrentPage] = useState('Topics');
-
-  const [selectedTab, setSelectedTab] = useState('IS112');
-
-  const [selectedTopic, setSelectedTopic] = useState('');
-
-  const changeSelectedTopicHandler = (event) => {
-      setSelectedTopic(event.target.dataset.cid);
-      setCurrentPage('Threads');
-  }
-
-  const changeSelectedTabHandler = (event) => {
-      setCurrentPage('Topics');
-      setSelectedTab(event.target.dataset.courseid);
-  }
-
-  const backToTopicsHandler = (event) => {
-    setCurrentPage('Topics');
-  }
+  const authCtx = useContext(AuthContext);
+  const isLoggedIn = authCtx.isLoggedIn;
 
   return (
     <div>
-      <Header 
-        pageheader="Discussion Forum"
-        selectedTab={selectedTab}
-        changeSelectedTabHandler={changeSelectedTabHandler}
-      />
+      {isLoggedIn && <Header pageheader="Discussion Forum" />}     
       
-      {currentPage === 'Topics' ? 
-        <Home 
-          selectedTab={selectedTab}
-          changeSelectedTabHandler={changeSelectedTabHandler}
-          changeSelectedTopicHandler={changeSelectedTopicHandler}
-        /> : ''}
-
-      {currentPage === 'Threads' ?
-        <Threads 
-          selectedTab={selectedTab}
-          selectedTopic={selectedTopic}
-          backToTopicsHandler={backToTopicsHandler}
-        /> : ''}
-      
+      <Routes>
+        <Route path='/auth' element={
+          <AuthForm />
+        }/>
+        {isLoggedIn && 
+          <Route path='/:courseCode/:topicId' element={
+            <Threads />
+          }/>
+        }
+        {isLoggedIn && 
+          <Route path='/:courseCode' element={
+            <Topics />
+          }/>
+        }
+        {!isLoggedIn && 
+          <Route path='*' element={
+            <Navigate to='/auth' />
+          }/>
+        }
+        {isLoggedIn && 
+          <Route path='*' element={
+            <Navigate to='/IS112' />
+          }/>
+        }
+      </Routes>
     </div>
   );
 }

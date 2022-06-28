@@ -4,12 +4,12 @@ import Card from '../UI/Card'
 import classes from './TopicCard.module.css'
 
 const TopicCard = props => {
-  const LAST_POST_LENGTH = props.description.length - 30;
+  const LAST_POST_LENGTH = Math.max(30, props.description.length - 50);
 
   return (
     <Card 
-      cid={props.card_id}
       onClick={props.onClick}
+      className={classes.topic_card}
       >
         <div className={classes.vertical_line}>
           <span className={classes.threads}>Threads</span> 

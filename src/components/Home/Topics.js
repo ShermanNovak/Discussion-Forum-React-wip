@@ -1,14 +1,20 @@
+import { useNavigate, useParams } from 'react-router-dom';
+
 import TopicCard from './TopicCard'
 import Content from '../UI/Content'
 
-import classes from './Home.module.css'
+// to add http requests to firebase
 
-const Home = props => {
+import classes from './Topics.module.css'
+
+const Topics = props => {
+    const params = useParams();
+    const navigate = useNavigate();
 
     const DUMMY_TOPICS = [
         {
             course_id: 3,
-            course: "COR2100",
+            course_code: "COR2100",
             topic_id: 1,
             topic_title: "Week 1",
             topic_description: "Basic Concepts",
@@ -19,7 +25,7 @@ const Home = props => {
         },
         {
             course_id: 3,
-            course: "COR2100",
+            course_code: "COR2100",
             topic_id: 2,
             topic_title: "Week 2",
             topic_description: "Consumer Choice & Demand",
@@ -30,7 +36,7 @@ const Home = props => {
         },
         {
             course_id: 3,
-            course: "COR2100",
+            course_code: "COR2100",
             topic_id: 3,
             topic_title: "Week 3",
             topic_description: "Supply & Firm Production & Costs",
@@ -41,7 +47,7 @@ const Home = props => {
         },
         {
             course_id: 5,
-            course: "COR3001",
+            course_code: "COR3001",
             topic_id: 4,
             topic_title: "Week 4 Guest Lecture",
             topic_description: "Write a short reflection (no more than 250 words) in response to ONE of the pinned prompts. If you wish, your reflection may elaborate upon the insight or question you submitted (or soon will be submitting) for this week's Reading Responses.",
@@ -53,7 +59,7 @@ const Home = props => {
     ] 
 
     const filteredTopics = DUMMY_TOPICS.filter(topic => {
-        return topic.course_id === props.selectedTab;
+        return topic.course_code === params.courseCode;
     })
 
     return (
@@ -62,14 +68,13 @@ const Home = props => {
                 (filteredTopics.map((eachcard) => (
                     <TopicCard
                         key={eachcard.topic_id}
-                        card_id={eachcard.topic_id}
                         title={eachcard.topic_title}
                         description={eachcard.topic_description}
                         threads={eachcard.threads}
                         posts={eachcard.posts}
                         last_post={eachcard.last_post}
                         last_user={eachcard.last_user}
-                        onClick={props.changeSelectedTopicHandler}
+                        onClick={() => navigate(`/${eachcard.course_code}/${eachcard.topic_id}`)}
                     />
                 )))
             }
@@ -77,4 +82,4 @@ const Home = props => {
     )
 }
 
-export default Home;
+export default Topics;

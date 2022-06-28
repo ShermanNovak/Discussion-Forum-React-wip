@@ -1,3 +1,13 @@
+.topic_card {
+    width: 78rem;
+    display: inline-block;
+}
+
+.topic_card:hover {
+    background: #340068;
+    color: white;
+}
+
 .last_user {
     border-radius: 50%;
     height: 2rem;

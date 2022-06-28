@@ -1,15 +1,22 @@
+import { Link, useParams } from 'react-router-dom';
+
 import Content from '../UI/Content'
 import Button from '../UI/Button'
 import TopicCard from '../Home/TopicCard'
 
 import classes from './Threads.module.css'
 
+// to refine the last post string cutting formula
+
 const Threads = props => {
+    const params = useParams();
+
     const DUMMY_THREADS = [
         {
             topic_id: 1,
             thread_id: 1,
-            course: "COR2100",
+            course_id: 3,
+            course_code: 'COR2100',
             thread_title: "Question",
             votes: 1,
             posts: 2,
@@ -20,7 +27,8 @@ const Threads = props => {
         {
             topic_id: 1,
             thread_id: 2,
-            course: "COR2100",
+            course_id: 3,
+            course_code: 'COR2100',
             thread_title: "Food for Thought",
             votes: 4,
             posts: 2,
@@ -31,7 +39,8 @@ const Threads = props => {
         {
             topic_id: 1,
             thread_id: 3,
-            course: "COR2100",
+            course_id: 3,
+            course_code: 'COR2100',
             thread_title: "Optimal decision",
             votes: 2,
             posts: 2,
@@ -42,7 +51,8 @@ const Threads = props => {
         {
             topic_id: 4,
             thread_id: 1,
-            course: "COR3001",
+            course_id: 5,
+            course_code: 'COR2100',
             thread_title: "Free Reflection",
             votes: 0,
             posts: 2,
@@ -53,12 +63,12 @@ const Threads = props => {
     ]
 
     const filteredThreads = DUMMY_THREADS.filter(thread => {
-        return thread.course === props.selectedTab && thread.topic_id === props.selectedTopic;
+        return thread.course_code === params.courseCode && thread.topic_id == params.topicId;
     })
 
     return (
         <Content pageTitle='Threads'>
-            <a onClick={props.backToTopicsHandler} className={classes.back}>Back to Topics</a>
+            <Link to={`/${params.courseCode}`} className={classes.back}>Back to Topics</Link>
             <Button className={classes.right_align}>+ NEW THREAD</Button>
             <br />
             {filteredThreads.length === 0 ? (<p>No threads created yet.</p>) : 

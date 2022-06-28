@@ -29,3 +29,7 @@
   margin-right: 8rem;
   margin-top: 1rem;
 }
+
+.logout {
+  position: absolute;
+}
