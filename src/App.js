@@ -6,6 +6,7 @@ import Topics from './components/Home/Topics'
 import Threads from './components/Threads/Threads'
 import AuthForm from './components/Login/AuthForm'
 import AuthContext from './store/auth-context'
+import Thread from './components/Threads/Thread'
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -18,7 +19,12 @@ function App() {
       <Routes>
         <Route path='/auth' element={
           <AuthForm />
-        }/>
+        }/> 
+        {isLoggedIn && 
+          <Route path='/:courseCode/:topicId/:threadId' element={
+            <Thread />
+          }/>
+        }
         {isLoggedIn && 
           <Route path='/:courseCode/:topicId' element={
             <Threads />

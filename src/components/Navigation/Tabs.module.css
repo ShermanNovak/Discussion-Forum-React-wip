@@ -19,9 +19,11 @@
     margin-right: 2rem;
     padding-bottom: 0.5rem;
     color: #340068;
+    text-decoration: none;
 }
 
 .selected {
     font-weight: bold;
     border-bottom: 2px solid #59bfff;
+    text-decoration: none;
 }

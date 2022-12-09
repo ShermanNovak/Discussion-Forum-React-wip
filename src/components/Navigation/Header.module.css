@@ -30,6 +30,13 @@
   margin-top: 1rem;
 }
 
-.logout {
+.arrow {
+  font-size: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 600;
+  color: #340068;
+}
+
+.dropdown {
   position: absolute;
 }

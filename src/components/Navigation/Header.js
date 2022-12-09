@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 
 import Tabs from './Tabs'
 import dp2 from '../../assets/dp2.png'
-import Button from '../UI/Button'
+import Card from '../UI/Card'
 import AuthContext from '../../store/auth-context';
+
+// to change logout button to dropdown toggle
 
 import classes from './Header.module.css'
 
@@ -27,14 +29,15 @@ const Header = props => {
         <div>
             <nav className={classes.header}>
                 {props.pageheader ? <span className={classes.pageheader}>{props.pageheader}</span> : ''}
-                <div className={classes.profile_photo}>
+                <div className={classes.profile_photo} onClick={showLogoutHandler}>
                     {showLogout && 
-                        <Button 
+                        <Card 
                             onClick={logoutHandler}
-                            className={classes.logout}
-                        >Logout</Button>
+                            className={classes.dropdown}
+                        >Logout</Card>
                     }
-                    <img onClick={showLogoutHandler} className={classes.user} src={dp2} />
+                    <img className={classes.user} src={dp2} />
+                    <span className={classes.arrow}>⌄</span>
                 </div>
             </nav>
             <Tabs />

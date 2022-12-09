@@ -18,7 +18,7 @@ const TopicCard = props => {
           <br />
           <span className={classes.thread_count}>{props.threads}</span>
           <span className={classes.post_count}>{props.posts}</span>
-          <img className={classes.last_user} src={dp1} alt="dp1"></img>
+          <img className={classes.last_user} src={dp1} alt="profile picture"></img>
           <span className={classes.last_post_text}>{props.last_post.substring(0, LAST_POST_LENGTH)}{props.last_post.length >= LAST_POST_LENGTH && '...'}</span>
         </div>
         <b className={classes.title}>{props.title}</b>

@@ -1,8 +1,6 @@
-import { Link, useParams } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 
 import classes from './Tabs.module.css'
-
-// to fix link styling
 
 const Tabs = props => {
     const params = useParams();
@@ -34,11 +32,11 @@ const Tabs = props => {
         <div className={classes.tabline}>
             <div className={classes.tabs}>
                 {COURSES.map((course) => (
-                    <Link 
+                    <NavLink 
                         to={`/${course.course_code}`}
                         key={course.course_id}
-                        className={`${classes.tab} ${params.courseCode === course.course_code ? classes.selected : ''}`}
-                    >{course.course_code}</Link>
+                        className={(navData) => navData.isActive? `${classes.selected} ${classes.tab}` : classes.tab}
+                    >{course.course_code}</NavLink>
                 ))}
             </div>
         </div>

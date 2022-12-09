@@ -1,15 +1,15 @@
-import { Link, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Content from '../UI/Content'
 import Button from '../UI/Button'
 import TopicCard from '../Home/TopicCard'
+import BackLink from '../UI/BackLink'
 
 import classes from './Threads.module.css'
 
-// to refine the last post string cutting formula
-
 const Threads = props => {
     const params = useParams();
+    const navigate = useNavigate();
 
     const DUMMY_THREADS = [
         {
@@ -68,7 +68,7 @@ const Threads = props => {
 
     return (
         <Content pageTitle='Threads'>
-            <Link to={`/${params.courseCode}`} className={classes.back}>Back to Topics</Link>
+            <BackLink to={`/${params.courseCode}`}>Back to Topics</BackLink>
             <Button className={classes.right_align}>+ NEW THREAD</Button>
             <br />
             {filteredThreads.length === 0 ? (<p>No threads created yet.</p>) : 
@@ -82,6 +82,7 @@ const Threads = props => {
                         posts={eachcard.posts}
                         last_post={eachcard.last_post}
                         last_user={eachcard.last_user}
+                        onClick={() => navigate(`/${eachcard.course_code}/${eachcard.topic_id}/${eachcard.thread_id}`)}
                     />
             )))}
         </Content>
