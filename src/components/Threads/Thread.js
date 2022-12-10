@@ -34,7 +34,7 @@ const Thread = props => {
     })
 
     return (
-        <Content pageTitle={DUMMY_THREAD_TITLE}>
+        <Content pageTitle="Topics">
             <BackLink to={`/${params.courseCode}/${params.topicId}`}>Back to Threads</BackLink>
             {filteredPosts.length === 0 ? (<p>No posts created yet.</p>) : 
                 (filteredPosts.map((eachpost) => (

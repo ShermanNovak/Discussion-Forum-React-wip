@@ -1,4 +1,4 @@
-import { Fragment, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 // home page
@@ -9,8 +9,6 @@ import { useNavigate } from "react-router-dom";
 // to set up localstorage
 // isLoading
 
-import Card from "../UI/Card";
-import Button from "../UI/Button";
 import useInput from "../../hooks/use-input";
 import AuthContext from "../../store/auth-context";
 import LoadingSpinner from "../UI/LoadingSpinner";
@@ -28,6 +26,8 @@ const AuthForm = (props) => {
 
   const toggleAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
+    resetEmailInput();
+    resetPasswordInput();
   };
 
   const {
@@ -106,57 +106,86 @@ const AuthForm = (props) => {
         alert(err.message);
       });
 
-      resetEmailInput();
-      resetPasswordInput();
+    resetEmailInput();
+    resetPasswordInput();
   };
 
   return (
-    <Fragment>
-      {isLoading && <LoadingSpinner />}
-      <Card className={classes.card_form}>
-        <div className={classes.title}>{isLogin ? "Login" : "Sign Up"}</div>
+    <div className="container-fluid">
+      <div className="row vh-100">
+        <div className="col-lg-5 col-md-6 col-12 p-5">
+          {isLoading && <LoadingSpinner />}
+          <h1>{isLogin ? "Welcome Back" : "Create an Account"}</h1>
+          <p>Continue with Google or enter your details</p>
 
-        <form onSubmit={formSubmissionHandler}>
-          <div className={classes.control}>
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              onChange={emailChangeHandler}
-              onBlur={emailBlurHandler}
-              value={enteredEmail}
-              required
-            />
-          </div>
+          <form onSubmit={formSubmissionHandler}>
+            <div className="form-floating has-validation my-2">
+              <input
+                type="email"
+                className={`form-control ${
+                  emailInputHasError ? "is-invalid" : ""
+                }`}
+                id="floatingEmail"
+                onChange={emailChangeHandler}
+                onBlur={emailBlurHandler}
+                value={enteredEmail}
+                placeholder="test@gmail.com"
+                required
+              />
+              <label htmlFor="floatingEmail">Email</label>
+            </div>
 
-          {emailInputHasError && <p>Please enter a valid email address.</p>}
-          <div className={classes.control}>
-            <label htmlFor="password">Your Password</label>
-            <input
-              type="password"
-              id="password"
-              onChange={passwordChangeHandler}
-              onBlur={passwordBlurHandler}
-              value={enteredPassword}
-              required
-            />
-          </div>
-          {passwordInputHasError && (
-            <p>Password must be at least 8 characters long.</p>
-          )}
-          <div className={classes.actions}>
-            <Button disabled={!formIsValid}>
-              {isLogin ? "Login" : "Create Account"}
-            </Button>
-            <Button className={classes.toggle} onClick={toggleAuthModeHandler}>
-              {isLogin
-                ? "Don't have an account? Sign up"
-                : "Already have an account? Login"}
-            </Button>
-          </div>
-        </form>
-      </Card>
-    </Fragment>
+            {emailInputHasError && (
+              <p className="invalid-feedback d-block">
+                Please enter a valid email address.
+              </p>
+            )}
+
+            <div className="form-floating my-2">
+              <input
+                type="password"
+                className={`form-control ${
+                  passwordInputHasError ? "is-invalid" : ""
+                }`}
+                id="floatingPassword"
+                onChange={passwordChangeHandler}
+                onBlur={passwordBlurHandler}
+                value={enteredPassword}
+                placeholder="password"
+                required
+              />
+              <label htmlFor="floatingPassword">Password</label>
+            </div>
+
+            {passwordInputHasError && (
+              <p className="invalid-feedback d-block">
+                Password must be at least 8 characters long.
+              </p>
+            )}
+            <div>
+              <button
+                type="submit"
+                className={`btn w-100 my-2 ${classes.authbtn}`}
+                disabled={!formIsValid}
+              >
+                {isLogin ? "Login" : "Create Account"}
+              </button>
+              <button
+                type="button"
+                className="btn p-0 my-2"
+                onClick={toggleAuthModeHandler}
+              >
+                {isLogin
+                  ? "Don't have an account? "
+                  : "Already have an account? "}
+                <b>{isLogin ? "Sign up" : "Login"}</b>
+              </button>
+            </div>
+          </form>
+        </div>
+        <div className={`col-lg-7 col-md-6 col-12 ${classes.gradient}`}>Test</div>
+      </div>
+    </div>
   );
 };
 

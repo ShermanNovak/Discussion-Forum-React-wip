@@ -15,12 +15,7 @@
     margin-top: -5px;
 }
 
-.title, .thread_count, .post_count, .last_post_text{
-    font-family: Courier, monospace;
-}
-
 .description {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     width: 30rem;
 }
 

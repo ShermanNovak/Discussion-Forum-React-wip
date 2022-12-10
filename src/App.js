@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { useContext } from 'react';
+import { Fragment, useContext } from 'react';
 
 import Header from './components/Navigation/Header'
 import Topics from './components/Home/Topics'
@@ -13,7 +13,7 @@ function App() {
   const isLoggedIn = authCtx.isLoggedIn;
 
   return (
-    <div>
+    <Fragment>
       {isLoggedIn && <Header pageheader="Discussion Forum" />}     
       
       <Routes>
@@ -46,7 +46,7 @@ function App() {
           }/>
         }
       </Routes>
-    </div>
+    </Fragment>
   );
 }
 
