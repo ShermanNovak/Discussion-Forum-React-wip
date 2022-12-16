@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 
 import useInput from "../../hooks/use-input";
 import AuthContext from "../../store/auth-context";
-import LoadingSpinner from "../UI/LoadingSpinner";
 
 import classes from "./AuthForm.module.css";
 
@@ -100,7 +99,7 @@ const AuthForm = (props) => {
           new Date().getTime() + +data.expiresIn * 1000
         );
         authCtx.login(data.idToken, expirationTime.toISOString());
-        navigate("/IS112");
+        navigate("/COR2100/1");
       })
       .catch((err) => {
         alert(err.message);
@@ -114,7 +113,11 @@ const AuthForm = (props) => {
     <div className="container-fluid">
       <div className="row vh-100">
         <div className="col-lg-5 col-md-6 col-12 p-5">
-          {isLoading && <LoadingSpinner />}
+          {isLoading && (
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          )}
           <h1>{isLogin ? "Welcome Back" : "Create an Account"}</h1>
           <p>Continue with Google or enter your details</p>
 
@@ -165,25 +168,23 @@ const AuthForm = (props) => {
             <div>
               <button
                 type="submit"
-                className={`btn w-100 my-2 ${classes.authbtn}`}
+                className="btn w-100 my-2"
                 disabled={!formIsValid}
               >
                 {isLogin ? "Login" : "Create Account"}
               </button>
-              <button
-                type="button"
-                className="btn p-0 my-2"
-                onClick={toggleAuthModeHandler}
-              >
+              <span className="p-0 my-2" onClick={toggleAuthModeHandler}>
                 {isLogin
                   ? "Don't have an account? "
                   : "Already have an account? "}
                 <b>{isLogin ? "Sign up" : "Login"}</b>
-              </button>
+              </span>
             </div>
           </form>
         </div>
-        <div className={`col-lg-7 col-md-6 col-12 ${classes.gradient}`}>Test</div>
+        <div className={`col-lg-7 col-md-6 col-12 ${classes.gradient}`}>
+          Test
+        </div>
       </div>
     </div>
   );

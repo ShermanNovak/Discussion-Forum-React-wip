@@ -1,85 +1,76 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 
-import TopicCard from './TopicCard'
-import Content from '../UI/Content'
+import { collection, query, where, getDocs } from "firebase/firestore";
+import db from "../../firebase/firebase.js";
 
-// to add http requests to firebase
+import TopicCard from "./TopicCard";
+import SideBar from '../Navigation/SideBar.js'
 
-import classes from './Topics.module.css'
+// maybe make fetching into a hook?
 
-const Topics = props => {
-    const params = useParams();
-    const navigate = useNavigate();
+const Topics = (props) => {
+  const params = useParams();
+  const navigate = useNavigate();
 
-    const DUMMY_TOPICS = [
-        {
-            course_id: 3,
-            course_code: "COR2100",
-            topic_id: 1,
-            topic_title: "Week 1",
-            topic_description: "Basic Concepts",
-            threads: 8, 
-            posts: 15,
-            last_post: "Looks correct.",
-            last_user: "user.2021"
-        },
-        {
-            course_id: 3,
-            course_code: "COR2100",
-            topic_id: 2,
-            topic_title: "Week 2",
-            topic_description: "Consumer Choice & Demand",
-            threads: 8, 
-            posts: 15,
-            last_post: "Very nice.",
-            last_user: "user.2021"
-        },
-        {
-            course_id: 3,
-            course_code: "COR2100",
-            topic_id: 3,
-            topic_title: "Week 3",
-            topic_description: "Supply & Firm Production & Costs",
-            threads: 8, 
-            posts: 15,
-            last_post: "hello! i think in this case it would be similar to the example we did in class on the opportunity cost in policy design? there were 4 alternatives in the case of PLQ mall. to rank the decisions, i think we have to depend on the context of the question? like for instance in the case we discussed in class, it was the opportunity cost of the one of the alternatives - the affordable housing project. ",
-            last_user: "user.2021"
-        },
-        {
-            course_id: 5,
-            course_code: "COR3001",
-            topic_id: 4,
-            topic_title: "Week 4 Guest Lecture",
-            topic_description: "Write a short reflection (no more than 250 words) in response to ONE of the pinned prompts. If you wish, your reflection may elaborate upon the insight or question you submitted (or soon will be submitting) for this week's Reading Responses.",
-            threads: 4, 
-            posts: 44,
-            last_post: "Hello Long Ji! I definitely agree with your point that it is honourable for an individual to fight for their rights and it brings about success in some cases. However, I would like to add my opinion by putting myself in the refugees' shoes.",
-            last_user: "user.2021"
-        }
-    ] 
+  const [topics, setTopics] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-    const filteredTopics = DUMMY_TOPICS.filter(topic => {
-        return topic.course_code === params.courseCode;
-    })
+  useEffect(() => {
+    console.log("useEffect");
+    const fetchTopics = async () => {
+      setIsLoading(true);
 
-    return (
-        <Content pageTitle='Topics'>
-            {filteredTopics.length === 0 ? (<p>No topics created yet.</p>) : 
-                (filteredTopics.map((eachcard) => (
-                    <TopicCard
-                        key={eachcard.topic_id}
-                        title={eachcard.topic_title}
-                        description={eachcard.topic_description}
-                        threads={eachcard.threads}
-                        posts={eachcard.posts}
-                        last_post={eachcard.last_post}
-                        last_user={eachcard.last_user}
-                        onClick={() => navigate(`/${eachcard.course_code}/${eachcard.topic_id}`)}
-                    />
-                )))
+      let loadedTopics = [];
+
+      const q = query(
+        collection(db, "threads"),
+        where("course_code", "==", params.courseCode),
+        where("category_id", "==", Number(params.categoryID))
+      );
+
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        console.log(doc.data())
+        loadedTopics.push(doc.data());
+      });
+
+      setTopics(loadedTopics);
+      console.log(topics);
+      setIsLoading(false);
+    };
+
+    fetchTopics().catch((error) => {
+      setIsLoading(false);
+    });
+  }, [params.courseCode, params.categoryID]);
+
+  return (
+    <SideBar>
+      <div className="d-flex flex-row">
+        <h1>Topics</h1>
+        <button className="btn ms-auto">Ask a Question</button>
+      </div>
+      {isLoading && (
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      )}
+      {topics.length === 0 ? (
+        <p>No topics created yet.</p>
+      ) : (
+        topics.map((eachcard) => (
+          <TopicCard
+            key={eachcard.post_id}
+            data={eachcard}
+            onClick={() =>
+              navigate(`/${eachcard.course_code}/${eachcard.category_id}/${eachcard.thread_id}`)
             }
-        </Content>
-    )
-}
+          />
+        ))
+      )}
+    </SideBar>
+  );
+};
 
 export default Topics;

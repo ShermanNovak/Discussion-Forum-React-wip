@@ -1,11 +1,10 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { Fragment, useContext } from 'react';
 
-import Header from './components/Navigation/Header'
 import Topics from './components/Home/Topics'
-import Threads from './components/Threads/Threads'
 import AuthForm from './components/Login/AuthForm'
 import AuthContext from './store/auth-context'
+import CreateForm from './components/Threads/CreateForm';
 import Thread from './components/Threads/Thread'
 
 function App() {
@@ -14,35 +13,28 @@ function App() {
 
   return (
     <Fragment>
-      {isLoggedIn && <Header pageheader="Discussion Forum" />}     
-      
       <Routes>
         <Route path='/auth' element={
           <AuthForm />
         }/> 
         {isLoggedIn && 
-          <Route path='/:courseCode/:topicId/:threadId' element={
+          <Route path='/:courseCode/:categoryID/:threadID' element={
             <Thread />
           }/>
         }
         {isLoggedIn && 
-          <Route path='/:courseCode/:topicId' element={
-            <Threads />
+          <Route path='/:courseCode/:categoryID/create' element={
+            <CreateForm />
           }/>
         }
         {isLoggedIn && 
-          <Route path='/:courseCode' element={
+          <Route path='/:courseCode/:categoryID' element={
             <Topics />
           }/>
         }
         {!isLoggedIn && 
           <Route path='*' element={
             <Navigate to='/auth' />
-          }/>
-        }
-        {isLoggedIn && 
-          <Route path='*' element={
-            <Navigate to='/IS112' />
           }/>
         }
       </Routes>

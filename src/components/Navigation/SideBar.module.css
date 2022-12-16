@@ -1,0 +1,9 @@
+.sidebar {
+  background-color: #000832;
+  color: white;
+  height: 100%;
+}
+
+.nav_isactive {
+  text-decoration: underline;
+}

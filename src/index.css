@@ -2,3 +2,13 @@ body {
   margin: 0;
   color: #000832;
 }
+
+.btn {
+  background-color: #000832;
+  color: white;
+}
+
+.btn:hover {
+  background-color: #001374;
+  color: white;
+}
