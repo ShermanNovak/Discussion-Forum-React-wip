@@ -5,7 +5,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import db from "../../firebase/firebase.js";
 
 import TopicCard from "./TopicCard";
-import SideBar from '../Navigation/SideBar.js'
+import SideBar from "../Navigation/SideBar.js";
 
 // maybe make fetching into a hook?
 
@@ -31,12 +31,11 @@ const Topics = (props) => {
 
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
-        console.log(doc.data())
         loadedTopics.push(doc.data());
       });
 
       setTopics(loadedTopics);
-      console.log(topics);
+      console.log("topics:", topics);
       setIsLoading(false);
     };
 
@@ -49,7 +48,14 @@ const Topics = (props) => {
     <SideBar>
       <div className="d-flex flex-row">
         <h1>Topics</h1>
-        <button className="btn ms-auto">Ask a Question</button>
+        <button
+          className="btn ms-auto"
+          onClick={() =>
+            navigate(`/${params.courseCode}/${params.categoryID}/create`)
+          }
+        >
+          Ask a Question
+        </button>
       </div>
       {isLoading && (
         <div className="spinner-border" role="status">
@@ -64,7 +70,9 @@ const Topics = (props) => {
             key={eachcard.post_id}
             data={eachcard}
             onClick={() =>
-              navigate(`/${eachcard.course_code}/${eachcard.category_id}/${eachcard.thread_id}`)
+              navigate(
+                `/${eachcard.course_code}/${eachcard.category_id}/${eachcard.thread_id}`
+              )
             }
           />
         ))

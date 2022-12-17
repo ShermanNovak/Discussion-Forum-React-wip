@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import SideBar from "../Navigation/SideBar";
 import Post from "./Post";
 
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import db from "../../firebase/firebase.js";
 
 import dp2 from "../../assets/dp2.png";
@@ -23,48 +23,90 @@ const Thread = (props) => {
     hasError: postInputHasError,
     valueChangeHandler: postChangeHandler,
     inputBlurHandler: postBlurHandler,
-    reset: resetEmailInput,
+    reset: resetPostInput,
   } = useInput((value) => value.trim().length > 0);
+
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  const fetchPosts = async () => {
+    setIsLoading(true);
+
+    let loadedPosts = [];
+
+    const q = query(
+      collection(db, "posts"),
+      where("course_code", "==", params.courseCode),
+      where("category_id", "==", Number(params.categoryID)),
+      where("thread_id", "==", Number(params.threadID))
+    );
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      loadedPosts.push(doc.data());
+    });
+
+    loadedPosts.sort(function (a, b) {
+      return a["date_posted"] - b["date_posted"];
+    });
+
+    setPosts(loadedPosts);
+    console.log("posts:", posts);
+    setIsLoading(false);
+  };
+
+  const submitReplyHandler = async () => {
+    // check if there is an error
+    // need to update latest_post on thread
+    setIsLoading(true)
+
+    const docRef = await addDoc(collection(db, "posts"), {
+      post_content: enteredPost,
+      likes: 0,
+      replies: 0,
+      course_code: params.courseCode,
+      category_id: Number(params.categoryID),
+      thread_id: Number(params.threadID),
+      date_posted: new Date(),
+      post_id: Math.floor(Math.random() * 10000000),
+      author: "Sharlene Tio",
+    });
+
+    console.log("Document written with ID: ", docRef.id);
+
+    resetPostInput();
+    fetchPosts().catch((error) => {
+      setIsLoading(false);
+      console.log(error)
+    });
+  };
 
   useEffect(() => {
     console.log("useEffect");
-    const fetchPosts = async () => {
-      setIsLoading(true);
-
-      let loadedPosts = [];
-
-      const q = query(
-        collection(db, "posts"),
-        where("course_code", "==", params.courseCode),
-        where("category_id", "==", Number(params.categoryID)),
-        where("thread_id", "==", Number(params.threadID))
-      );
-
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        console.log(doc.data());
-        loadedPosts.push(doc.data());
-      });
-
-      setPosts(loadedPosts);
-      console.log(posts);
-      setIsLoading(false);
-    };
 
     fetchPosts().catch((error) => {
       setIsLoading(false);
+      console.log(error)
     });
   }, [params.courseCode, params.categoryID, params.threadID]);
 
   return (
     <SideBar>
-      <h1>{posts[0].post_content}</h1>
+      {posts.length > 0 && <h1>{posts[0]["post_content"]}</h1>}
+      {posts.length > 0 && (
+        <p>
+          Asked by {posts[0]["author"]} on{" "}
+          {formatDate(posts[0]["date_posted"].toDate())}
+        </p>
+      )}
       {isLoading && (
         <div className="spinner-border" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
       )}
-      {posts.length === 0 ? (
+      {!isLoading && posts.length === 0 ? (
         <p>No posts created yet.</p>
       ) : (
         posts.slice(1).map((post) => <Post data={post} />)
@@ -93,9 +135,11 @@ const Thread = (props) => {
                 value={enteredPost}
                 style={{ height: "100px" }}
               ></textarea>
-              <label for="floatingTextarea2">Type your reply here...</label>
+              <label htmlFor="floatingTextarea2">Type your reply here...</label>
             </div>
-            <button className="btn mt-3">Post Comment</button>
+            <button className="btn mt-3" onClick={submitReplyHandler}>
+              Post Comment
+            </button>
           </div>
         </div>
       )}
