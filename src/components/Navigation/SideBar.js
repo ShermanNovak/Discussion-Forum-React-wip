@@ -77,12 +77,6 @@ const SideBar = (props) => {
       <div className="row vh-100">
         <div className="col-3 p-0">
           <div className={`${classes.sidebar} p-3`}>
-            {isLoading && (
-              <div className="spinner-border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
-            )}
-
             <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
               <li className="nav-item dropdown py-0">
                 <span
@@ -91,7 +85,7 @@ const SideBar = (props) => {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                 {params.courseCode}
+                  {params.courseCode}
                 </span>
                 <ul className="dropdown-menu">
                   {courses.map((course) => (
@@ -107,6 +101,12 @@ const SideBar = (props) => {
                   ))}
                 </ul>
               </li>
+
+              {isLoading && (
+                <div className="spinner-border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
 
               {categories.map((category) => (
                 <li className="nav-item">

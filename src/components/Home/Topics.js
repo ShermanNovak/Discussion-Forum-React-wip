@@ -62,7 +62,7 @@ const Topics = (props) => {
           <span className="visually-hidden">Loading...</span>
         </div>
       )}
-      {topics.length === 0 ? (
+      {!isLoading && topics.length === 0 ? (
         <p>No topics created yet.</p>
       ) : (
         topics.map((eachcard) => (
