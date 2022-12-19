@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 
 // home page
@@ -11,14 +11,19 @@ import { useNavigate } from "react-router-dom";
 
 import useInput from "../../hooks/use-input";
 import AuthContext from "../../store/auth-context";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 
 import classes from "./AuthForm.module.css";
-
-let API_KEY = "AIzaSyB18YrDwB_Wzo7HnCGjcEhvh9H3fpxFl1U";
 
 const AuthForm = (props) => {
   const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
+  const auth = getAuth();
 
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -47,13 +52,36 @@ const AuthForm = (props) => {
     reset: resetPasswordInput,
   } = useInput((value) => value.trim().length >= 8);
 
+  const {
+    value: enteredName,
+    isValid: enteredNameIsValid,
+    hasError: nameInputHasError,
+    valueChangeHandler: nameChangeHandler,
+    inputBlurHandler: nameBlurHandler,
+    reset: resetNameInput,
+  } = useInput((value) => value.trim().length > 0);
+
+  const {
+    value: enteredFile,
+    isValid: enteredFileIsValid,
+    hasError: fileInputHasError,
+    valueChangeHandler: fileChangeHandler,
+    inputBlurHandler: fileBlurHandler,
+    reset: resetFileInput,
+  } = useInput((value) => value !== undefined);
+
   let formIsValid = false;
 
-  if (enteredEmailIsValid && enteredPasswordIsValid) {
+  if (
+    enteredEmailIsValid &&
+    enteredPasswordIsValid &&
+    enteredNameIsValid &&
+    enteredFileIsValid
+  ) {
     formIsValid = true;
   }
 
-  const formSubmissionHandler = (event) => {
+  const formSubmissionHandler = async (event) => {
     event.preventDefault();
 
     if (!enteredEmailIsValid || !enteredPasswordIsValid) {
@@ -61,52 +89,41 @@ const AuthForm = (props) => {
     }
 
     setIsLoading(true);
-    let url;
-    if (isLogin) {
-      url =
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" +
-        API_KEY;
-    } else {
-      url =
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" +
-        API_KEY;
-    }
-    fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        email: enteredEmail,
-        password: enteredPassword,
-        returnSecureToken: true,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((result) => {
-        setIsLoading(false);
-        if (result.ok) {
-          console.log(result);
-          return result.json();
-        } else {
-          return result.json().then((data) => {
-            console.log(data);
-            throw new Error(data.error.message);
-          });
-        }
-      })
-      .then((data) => {
-        const expirationTime = new Date(
-          new Date().getTime() + +data.expiresIn * 1000
-        );
-        authCtx.login(data.idToken, expirationTime.toISOString());
-        navigate("/COR2100/1");
-      })
-      .catch((err) => {
-        alert(err.message);
-      });
 
+    if (isLogin) {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        enteredEmail,
+        enteredPassword
+      );
+      console.log(userCredential);
+      authCtx.login(
+        userCredential["_tokenResponse"]["idToken"],
+        userCredential["_tokenResponse"]["expiresIn"]
+      );
+    } else {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        enteredEmail,
+        enteredPassword
+      );
+      console.log(userCredential);
+      authCtx.login(
+        userCredential["_tokenResponse"]["idToken"],
+        userCredential["_tokenResponse"]["expiresIn"]
+      );
+
+      await updateProfile(auth.currentUser, {
+        displayName: enteredName,
+      });
+    }
+
+    navigate("/COR2100/1");
+
+    resetNameInput();
     resetEmailInput();
     resetPasswordInput();
+    resetFileInput();
   };
 
   return (
@@ -122,6 +139,30 @@ const AuthForm = (props) => {
           <p>Continue with Google or enter your details</p>
 
           <form onSubmit={formSubmissionHandler}>
+            {!isLogin && (
+              <div className="form-floating has-validation my-2">
+                <input
+                  type="text"
+                  className={`form-control ${
+                    nameInputHasError ? "is-invalid" : ""
+                  }`}
+                  id="floatingName"
+                  onChange={nameChangeHandler}
+                  onBlur={nameBlurHandler}
+                  value={enteredName}
+                  placeholder="tom@gmail.com"
+                  required
+                />
+                <label htmlFor="floatingName">Name</label>
+              </div>
+            )}
+
+            {nameInputHasError && (
+              <p className="invalid-feedback d-block">
+                Please enter your full name.
+              </p>
+            )}
+
             <div className="form-floating has-validation my-2">
               <input
                 type="email"
@@ -163,6 +204,33 @@ const AuthForm = (props) => {
             {passwordInputHasError && (
               <p className="invalid-feedback d-block">
                 Password must be at least 8 characters long.
+              </p>
+            )}
+
+            {!isLogin && (
+              <Fragment>
+                <hr />
+                <span>Profile Picture</span>
+                <div className="input-group has-validation my-2">
+                  <input
+                    type="file"
+                    className={`form-control ${
+                      fileInputHasError ? "is-invalid" : ""
+                    }`}
+                    id="floatingFile"
+                    onChange={fileChangeHandler}
+                    onBlur={fileBlurHandler}
+                    value={enteredFile}
+                    placeholder="www.google.com"
+                    required
+                  />
+                </div>
+              </Fragment>
+            )}
+
+            {fileInputHasError && (
+              <p className="invalid-feedback d-block">
+                Please submit a profile picture.
               </p>
             )}
             <div>
